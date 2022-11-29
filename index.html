@@ -87,6 +87,14 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "0c68be99fd6448b382a65d2623ac77e1"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -95,13 +103,122 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      class InputError extends Error{
+        constructor(err_message){
+          super(err_message);
+          this.class = "InputError";
+        }
+      }
+      try {
+        if (isNaN(firstNum)){
+          throw new InputError("First input is not a number!")
+        }
+        if (isNaN(secondNum)){
+          throw new InputError("Second input is not a number!")
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch(error){
+        TrackJS.track('Manual Error Catch in Calculate');
+        console.log(error);
+        output.innerHTML = "NaN"
+      }
+      finally {
+        console.log("Calculation is complete, refer to output.");
+      }
+
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    let first_in = document.getElementById('first-num');
+    let second_in = document.getElementById('second-num');
+    let log_count = 0;
+    
+    // Console Log
+    errorBtns[0].addEventListener('click', () => {
+      console.log("Console Log Button");
+    });
+
+    // Console Error
+    errorBtns[1].addEventListener('click', () => {
+      console.error("Console Error Button");
+    });
+
+    // Console Count
+    errorBtns[2].addEventListener('click', () => {
+      console.count("How many times did you click");
+    });
+
+    // Console Warn
+    errorBtns[3].addEventListener('click', () => {
+      console.warn("Console Warn Button");
+    });
+
+    // Console Assert
+    errorBtns[4].addEventListener('click', () => {
+      console.assert(first_in.value === second_in.value, "The two inputs are not the same!");
+    });
+
+    // Console Clear
+    errorBtns[5].addEventListener('click', () => {
+      console.clear("Clearing...");
+    });
+
+    // Console dir
+    let dir_button = errorBtns[6];
+    dir_button.addEventListener('click', () => {
+      console.dir(dir_button);
+    });
+
+    // Console dirxml
+    let dirxml_button = errorBtns[7];
+    dirxml_button.addEventListener('click', () => {
+      console.dirxml(dirxml_button);
+    });
+
+    // Console Group Start
+    errorBtns[8].addEventListener('click', () => {
+      console.group("Group Start");
+    });
+
+    // Console Group End
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    // Console Table
+    errorBtns[10].addEventListener('click', () => {
+      console.table([{name: "first input", number: first_in.value}, {name: "second input", number: second_in.value}]);
+    });
+
+    // Console Start Timer
+    errorBtns[11].addEventListener('click', () => {
+      console.time();
+    });
+
+    // Console End Timer
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd();
+    });
+
+    // Console Trace
+    errorBtns[13].addEventListener('click', () => {
+      const func1 = () => {func2();};
+      const func2 = () => {console.trace();};
+      func1();
+    });
+
+    // Global Error
+    errorBtns[14].addEventListener('click', () => {
+      console.log("AN ERROR IS HAPPENING!!!")
+      return BOOM;
+    });
+  
   </script>
 </body>
 
