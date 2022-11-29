@@ -121,7 +121,7 @@
       }
       catch(error){
         TrackJS.track('Manual Error Catch in Calculate');
-        console.log(error);
+        console.error(error);
         output.innerHTML = "NaN"
       }
       finally {
